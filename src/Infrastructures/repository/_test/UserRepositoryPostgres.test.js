@@ -1,4 +1,5 @@
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const AuthenticationError = require('../../../Commons/exceptions/AuthenticationError');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
 const RegisterUser = require('../../../Domains/users/entities/RegisterUser');
 const RegisteredUser = require('../../../Domains/users/entities/RegisteredUser');
@@ -120,6 +121,25 @@ describe('UserRepositoryPostgres', () => {
 
       // Assert
       expect(userId).toEqual('user-321');
+    });
+  });
+
+  describe('checkAvailabilityUser function', () => {
+    it('should not throw AuthenticationError when id found', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(userRepositoryPostgres.checkAvailabilityUser('user-123')).resolves.not.toThrowError(AuthenticationError);
+    });
+
+    it('should throw AuthenticationError when id not found', async () => {
+      // Arrange
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(userRepositoryPostgres.checkAvailabilityUser('user-123')).rejects.toThrowError(AuthenticationError);
     });
   });
 });
