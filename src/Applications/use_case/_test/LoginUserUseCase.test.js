@@ -1,12 +1,12 @@
+const NewAuth = require('../../../Domains/authentications/entities/NewAuth');
 const UserRepository = require('../../../Domains/users/UserRepository');
 const AuthenticationRepository = require('../../../Domains/authentications/AuthenticationRepository');
 const AuthenticationTokenManager = require('../../security/AuthenticationTokenManager');
 const PasswordHash = require('../../security/PasswordHash');
 const LoginUserUseCase = require('../LoginUserUseCase');
-const NewAuth = require('../../../Domains/authentications/entities/NewAuth');
 
-describe('GetAuthenticationUseCase', () => {
-  it('should orchestrating the get authentication action correctly', async () => {
+describe('LoginUserUseCase', () => {
+  it('should orchestrating the login user action correctly', async () => {
     // Arrange
     const useCasePayload = {
       username: 'dicoding',
@@ -22,16 +22,16 @@ describe('GetAuthenticationUseCase', () => {
     const mockPasswordHash = new PasswordHash();
 
     // Mocking
-    mockUserRepository.getPasswordByUsername = jest.fn()
+    mockUserRepository.getPassword = jest.fn()
       .mockImplementation(() => Promise.resolve('encrypted_password'));
-    mockPasswordHash.comparePassword = jest.fn()
+    mockPasswordHash.compare = jest.fn()
       .mockImplementation(() => Promise.resolve());
+    mockUserRepository.getUserId = jest.fn()
+      .mockImplementation(() => Promise.resolve('user-123'));
     mockAuthenticationTokenManager.createAccessToken = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedAuthentication.accessToken));
     mockAuthenticationTokenManager.createRefreshToken = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedAuthentication.refreshToken));
-    mockUserRepository.getIdByUsername = jest.fn()
-      .mockImplementation(() => Promise.resolve('user-123'));
     mockAuthenticationRepository.addToken = jest.fn()
       .mockImplementation(() => Promise.resolve());
 
@@ -47,18 +47,18 @@ describe('GetAuthenticationUseCase', () => {
     const actualAuthentication = await loginUserUseCase.execute(useCasePayload);
 
     // Assert
-    expect(actualAuthentication).toEqual(expectedAuthentication);
-    expect(mockUserRepository.getPasswordByUsername)
+    expect(mockUserRepository.getPassword)
       .toBeCalledWith('dicoding');
-    expect(mockPasswordHash.comparePassword)
+    expect(mockPasswordHash.compare)
       .toBeCalledWith('secret', 'encrypted_password');
-    expect(mockUserRepository.getIdByUsername)
+    expect(mockUserRepository.getUserId)
       .toBeCalledWith('dicoding');
     expect(mockAuthenticationTokenManager.createAccessToken)
-      .toBeCalledWith({ username: 'dicoding', id: 'user-123' });
+      .toBeCalledWith({ id: 'user-123' });
     expect(mockAuthenticationTokenManager.createRefreshToken)
-      .toBeCalledWith({ username: 'dicoding', id: 'user-123' });
+      .toBeCalledWith({ id: 'user-123' });
     expect(mockAuthenticationRepository.addToken)
       .toBeCalledWith(expectedAuthentication.refreshToken);
+    expect(actualAuthentication).toEqual(expectedAuthentication);
   });
 });

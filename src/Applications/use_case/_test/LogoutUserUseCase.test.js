@@ -2,37 +2,32 @@ const AuthenticationRepository = require('../../../Domains/authentications/Authe
 const LogoutUserUseCase = require('../LogoutUserUseCase');
 
 describe('LogoutUserUseCase', () => {
-  it('should throw error if use case payload not contain refresh token', async () => {
+  it('should throw error if use case payload not contain needed property', async () => {
     // Arrange
     const useCasePayload = {};
     const logoutUserUseCase = new LogoutUserUseCase({});
 
     // Action & Assert
     await expect(logoutUserUseCase.execute(useCasePayload))
-      .rejects
-      .toThrowError('DELETE_AUTHENTICATION_USE_CASE.NOT_CONTAIN_REFRESH_TOKEN');
+      .rejects.toThrowError('LOGOUT_USER_USE_CASE.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
-  it('should throw error if refresh token not string', async () => {
+  it('should throw error if use case payload not meet data type specification', async () => {
     // Arrange
-    const useCasePayload = {
-      refreshToken: 123,
-    };
+    const useCasePayload = { refreshToken: 123 };
     const logoutUserUseCase = new LogoutUserUseCase({});
 
     // Action & Assert
     await expect(logoutUserUseCase.execute(useCasePayload))
-      .rejects
-      .toThrowError('DELETE_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
+      .rejects.toThrowError('LOGOUT_USER_USE_CASE.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
-  it('should orchestrating the delete authentication action correctly', async () => {
+  it('should orchestrating the logout user action correctly', async () => {
     // Arrange
-    const useCasePayload = {
-      refreshToken: 'refreshToken',
-    };
+    const useCasePayload = { refreshToken: 'refreshToken' };
     const mockAuthenticationRepository = new AuthenticationRepository();
-    mockAuthenticationRepository.checkAvailabilityToken = jest.fn()
+
+    mockAuthenticationRepository.checkToken = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockAuthenticationRepository.deleteToken = jest.fn()
       .mockImplementation(() => Promise.resolve());
@@ -41,11 +36,11 @@ describe('LogoutUserUseCase', () => {
       authenticationRepository: mockAuthenticationRepository,
     });
 
-    // Act
+    // Action
     await logoutUserUseCase.execute(useCasePayload);
 
     // Assert
-    expect(mockAuthenticationRepository.checkAvailabilityToken)
+    expect(mockAuthenticationRepository.checkToken)
       .toHaveBeenCalledWith(useCasePayload.refreshToken);
     expect(mockAuthenticationRepository.deleteToken)
       .toHaveBeenCalledWith(useCasePayload.refreshToken);

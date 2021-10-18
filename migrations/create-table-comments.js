@@ -18,6 +18,14 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
+    is_delete: {
+      type: 'BOOLEAN',
+      default: false,
+    },
+    date: {
+      type: 'TIMESTAMP',
+      default: pgm.func('current_timestamp'),
+    },
   });
 };
 

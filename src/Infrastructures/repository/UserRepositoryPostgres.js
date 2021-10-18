@@ -10,76 +10,61 @@ class UserRepositoryPostgres extends UserRepository {
     this._idGenerator = idGenerator;
   }
 
-  async verifyAvailableUsername(username) {
+  async addUser(registerUser) {
+    const { username, password, fullname } = registerUser;
+    const id = `user-${this._idGenerator()}`;
+    const query = {
+      text: 'INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id, username, fullname',
+      values: [id, username, password, fullname],
+    };
+    const result = await this._pool.query(query);
+    return new RegisteredUser({ ...result.rows[0] });
+  }
+
+  async checkUserId(userId) {
+    const query = {
+      text: 'SELECT id FROM users WHERE id = $1',
+      values: [userId],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rowCount) {
+      throw new AuthenticationError('user tidak ditemukan');
+    }
+  }
+
+  async checkUsername(username) {
     const query = {
       text: 'SELECT username FROM users WHERE username = $1',
       values: [username],
     };
-
     const result = await this._pool.query(query);
-
     if (result.rowCount) {
       throw new InvariantError('username tidak tersedia');
     }
   }
 
-  async addUser(registerUser) {
-    const { username, password, fullname } = registerUser;
-    const id = `user-${this._idGenerator()}`;
-
-    const query = {
-      text: 'INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id, username, fullname',
-      values: [id, username, password, fullname],
-    };
-
-    const result = await this._pool.query(query);
-
-    return new RegisteredUser({ ...result.rows[0] });
-  }
-
-  async getPasswordByUsername(username) {
-    const query = {
-      text: 'SELECT password FROM users WHERE username = $1',
-      values: [username],
-    };
-
-    const result = await this._pool.query(query);
-
-    if (!result.rowCount) {
-      throw new InvariantError('username tidak ditemukan');
-    }
-
-    return result.rows[0].password;
-  }
-
-  async getIdByUsername(username) {
+  async getUserId(username) {
     const query = {
       text: 'SELECT id FROM users WHERE username = $1',
       values: [username],
     };
-
     const result = await this._pool.query(query);
-
     if (!result.rowCount) {
       throw new InvariantError('user tidak ditemukan');
     }
-
-    const { id } = result.rows[0];
-
-    return id;
+    return result.rows[0].id;
   }
 
-  async checkAvailabilityUser(id) {
+  async getPassword(username) {
     const query = {
-      text: 'SELECT id FROM users WHERE id = $1',
-      values: [id],
+      text: 'SELECT password FROM users WHERE username = $1',
+      values: [username],
     };
-
     const result = await this._pool.query(query);
-
     if (!result.rowCount) {
-      throw new AuthenticationError('id user tidak ditemukan');
+      throw new InvariantError('user tidak ditemukan');
     }
+    return result.rows[0].password;
   }
 }
 

@@ -12,7 +12,7 @@ class BcryptPasswordHash extends EncryptionHelper {
     return this._bcrypt.hash(password, this._saltRound);
   }
 
-  async comparePassword(password, hashedPassword) {
+  async compare(password, hashedPassword) {
     const result = await this._bcrypt.compare(password, hashedPassword);
 
     if (!result) {

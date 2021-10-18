@@ -15,8 +15,8 @@ describe('AddCommentUseCase', () => {
     };
     const expectedAddedComment = new AddedComment({
       id: 'comment-123',
-      content: 'a Content',
-      owner: 'user-123',
+      content: useCasePayload.content,
+      owner: useCasePayload.owner,
     });
 
     /** creating dependency of use case */
@@ -25,9 +25,9 @@ describe('AddCommentUseCase', () => {
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
-    mockUserRepository.checkAvailabilityUser = jest.fn()
+    mockUserRepository.checkUserId = jest.fn()
       .mockImplementation(() => Promise.resolve());
-    mockThreadRepository.checkAvailabilityThread = jest.fn()
+    mockThreadRepository.checkThread = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockCommentRepository.addComment = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedAddedComment));
@@ -43,10 +43,10 @@ describe('AddCommentUseCase', () => {
     const addedComment = await getCommentUseCase.execute(useCasePayload);
 
     // Assert
-    expect(mockUserRepository.checkAvailabilityUser)
-      .toBeCalledWith((new AddComment(useCasePayload)).owner);
-    expect(mockThreadRepository.checkAvailabilityThread)
-      .toBeCalledWith((new AddComment(useCasePayload)).thread);
+    expect(mockUserRepository.checkUserId)
+      .toBeCalledWith(useCasePayload.owner);
+    expect(mockThreadRepository.checkThread)
+      .toBeCalledWith(useCasePayload.thread);
     expect(mockCommentRepository.addComment)
       .toBeCalledWith(new AddComment(useCasePayload));
     expect(addedComment).toStrictEqual(expectedAddedComment);

@@ -1,5 +1,5 @@
-const UserLogin = require('../../Domains/users/entities/UserLogin');
-const NewAuthentication = require('../../Domains/authentications/entities/NewAuth');
+const LoginUser = require('../../Domains/users/entities/LoginUser');
+const NewAuth = require('../../Domains/authentications/entities/NewAuth');
 
 class LoginUserUseCase {
   constructor({
@@ -15,26 +15,18 @@ class LoginUserUseCase {
   }
 
   async execute(useCasePayload) {
-    const { username, password } = new UserLogin(useCasePayload);
-
-    const encryptedPassword = await this._userRepository.getPasswordByUsername(username);
-
-    await this._passwordHash.comparePassword(password, encryptedPassword);
-
-    const id = await this._userRepository.getIdByUsername(username);
+    const { username, password } = new LoginUser(useCasePayload);
+    const encryptedPassword = await this._userRepository.getPassword(username);
+    await this._passwordHash.compare(password, encryptedPassword);
+    const id = await this._userRepository.getUserId(username);
 
     const accessToken = await this._authenticationTokenManager
-      .createAccessToken({ username, id });
+      .createAccessToken({ id });
     const refreshToken = await this._authenticationTokenManager
-      .createRefreshToken({ username, id });
+      .createRefreshToken({ id });
 
-    const newAuthentication = new NewAuthentication({
-      accessToken,
-      refreshToken,
-    });
-
+    const newAuthentication = new NewAuth({ accessToken, refreshToken });
     await this._authenticationRepository.addToken(newAuthentication.refreshToken);
-
     return newAuthentication;
   }
 }

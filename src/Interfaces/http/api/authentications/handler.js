@@ -16,34 +16,30 @@ class AuthenticationsHandler {
     const { accessToken, refreshToken } = await loginUserUseCase.execute(request.payload);
     const response = h.response({
       status: 'success',
-      data: {
-        accessToken,
-        refreshToken,
-      },
+      data: { accessToken, refreshToken },
     });
     response.code(201);
     return response;
   }
 
-  async putAuthenticationHandler(request) {
+  async putAuthenticationHandler(request, h) {
     const refreshAuthenticationUseCase = this._container
       .getInstance(RefreshAuthenticationUseCase.name);
     const accessToken = await refreshAuthenticationUseCase.execute(request.payload);
-
-    return {
+    const response = h.response({
       status: 'success',
-      data: {
-        accessToken,
-      },
-    };
+      data: { accessToken },
+    });
+    return response;
   }
 
-  async deleteAuthenticationHandler(request) {
+  async deleteAuthenticationHandler(request, h) {
     const logoutUserUseCase = this._container.getInstance(LogoutUserUseCase.name);
     await logoutUserUseCase.execute(request.payload);
-    return {
+    const response = h.response({
       status: 'success',
-    };
+    });
+    return response;
   }
 }
 

@@ -12,10 +12,10 @@
     "ecmaVersion": 2020
   },
   "rules": {
+    "class-methods-use-this": "off",
     "linebreak-style": "off",
     "no-underscore-dangle": "off",
-    "class-methods-use-this": "off",
     "no-unused-vars": "off",
-    "no-console": "off"
+    "object-curly-newline": "off"
   }
 }

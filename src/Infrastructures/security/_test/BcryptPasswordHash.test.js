@@ -19,13 +19,13 @@ describe('BcryptEncryptionHelper', () => {
     });
   });
 
-  describe('comparePassword function', () => {
+  describe('compare function', () => {
     it('should throw AuthenticationError if password not match', async () => {
       // Arrange
       const bcryptEncryptionHelper = new BcryptEncryptionHelper(bcrypt);
 
       // Act & Assert
-      await expect(bcryptEncryptionHelper.comparePassword('plain_password', 'encrypted_password'))
+      await expect(bcryptEncryptionHelper.compare('plain_password', 'encrypted_password'))
         .rejects
         .toThrow(AuthenticationError);
     });
@@ -37,7 +37,7 @@ describe('BcryptEncryptionHelper', () => {
       const encryptedPassword = await bcryptEncryptionHelper.hash(plainPassword);
 
       // Act & Assert
-      await expect(bcryptEncryptionHelper.comparePassword(plainPassword, encryptedPassword))
+      await expect(bcryptEncryptionHelper.compare(plainPassword, encryptedPassword))
         .resolves.not.toThrow(AuthenticationError);
     });
   });
