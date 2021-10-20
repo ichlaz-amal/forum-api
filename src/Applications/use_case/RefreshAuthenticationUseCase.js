@@ -6,9 +6,11 @@ class RefreshAuthenticationUseCase {
 
   async execute(useCasePayload) {
     this._verifyPayload(useCasePayload);
+
     const { refreshToken } = useCasePayload;
     await this._authenticationTokenManager.verifyRefreshToken(refreshToken);
     await this._authenticationRepository.checkToken(refreshToken);
+
     const { id } = await this._authenticationTokenManager.decodePayload(refreshToken);
     return this._authenticationTokenManager.createAccessToken({ id });
   }

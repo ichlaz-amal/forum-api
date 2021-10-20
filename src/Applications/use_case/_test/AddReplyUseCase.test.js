@@ -1,20 +1,22 @@
-const AddComment = require('../../../Domains/comments/entities/AddComment');
-const AddedComment = require('../../../Domains/comments/entities/AddedComment');
+const AddReply = require('../../../Domains/replies/entities/AddReply');
+const AddedReply = require('../../../Domains/replies/entities/AddedReply');
 const UserRepository = require('../../../Domains/users/UserRepository');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
-const AddCommentUseCase = require('../AddCommentUseCase');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
+const AddReplyUseCase = require('../AddReplyUseCase');
 
-describe('AddCommentUseCase', () => {
-  it('should orchestrating the add comment action correctly', async () => {
+describe('AddReplyUseCase', () => {
+  it('should orchestrating the add reply action correctly', async () => {
     // Arrange
     const useCasePayload = {
       thread: 'thread-123',
-      content: 'A Comment',
+      comment: 'comment-123',
+      content: 'A Reply',
       owner: 'user-123',
     };
-    const expectedAddedComment = new AddedComment({
-      id: 'comment-123',
+    const expectedAddedReply = new AddedReply({
+      id: 'reply-123',
       content: useCasePayload.content,
       owner: useCasePayload.owner,
     });
@@ -23,32 +25,38 @@ describe('AddCommentUseCase', () => {
     const mockUserRepository = new UserRepository();
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
 
     /** mocking needed function */
     mockUserRepository.checkUserId = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockThreadRepository.checkThread = jest.fn()
       .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.addComment = jest.fn()
-      .mockImplementation(() => Promise.resolve(expectedAddedComment));
+    mockCommentRepository.checkComment = jest.fn()
+      .mockImplementation(() => Promise.resolve());
+    mockReplyRepository.addReply = jest.fn()
+      .mockImplementation(() => Promise.resolve(expectedAddedReply));
 
     /** creating use case instance */
-    const getCommentUseCase = new AddCommentUseCase({
+    const getReplyUseCase = new AddReplyUseCase({
       userRepository: mockUserRepository,
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
     });
 
     // Action
-    const addedComment = await getCommentUseCase.execute(useCasePayload);
+    const addedReply = await getReplyUseCase.execute(useCasePayload);
 
     // Assert
     expect(mockUserRepository.checkUserId)
       .toBeCalledWith(useCasePayload.owner);
     expect(mockThreadRepository.checkThread)
       .toBeCalledWith(useCasePayload.thread);
-    expect(mockCommentRepository.addComment)
-      .toBeCalledWith(new AddComment(useCasePayload));
-    expect(addedComment).toStrictEqual(expectedAddedComment);
+    expect(mockCommentRepository.checkComment)
+      .toBeCalledWith(useCasePayload.comment);
+    expect(mockReplyRepository.addReply)
+      .toBeCalledWith(new AddReply(useCasePayload));
+    expect(addedReply).toStrictEqual(expectedAddedReply);
   });
 });

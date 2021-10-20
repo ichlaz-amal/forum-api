@@ -18,8 +18,8 @@ class LoginUserUseCase {
     const { username, password } = new LoginUser(useCasePayload);
     const encryptedPassword = await this._userRepository.getPassword(username);
     await this._passwordHash.compare(password, encryptedPassword);
-    const id = await this._userRepository.getUserId(username);
 
+    const id = await this._userRepository.getUserId(username);
     const accessToken = await this._authenticationTokenManager
       .createAccessToken({ id });
     const refreshToken = await this._authenticationTokenManager

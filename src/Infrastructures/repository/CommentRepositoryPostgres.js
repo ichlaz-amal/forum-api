@@ -22,16 +22,14 @@ class CommentRepositoryPostgres extends CommentRepository {
     return new AddedComment({ ...result.rows[0] });
   }
 
-  async checkComment({ userId, threadId, commentId }) {
+  async checkComment(commentId) {
     const query = {
-      text: 'SELECT owner FROM comments WHERE id = $1 AND thread = $2',
-      values: [commentId, threadId],
+      text: 'SELECT id FROM comments WHERE id = $1',
+      values: [commentId],
     };
     const result = await this._pool.query(query);
     if (!result.rowCount) {
-      throw new NotFoundError('comment tidak ditemukan');
-    } if (result.rows[0].owner !== userId) {
-      throw new AuthorizationError('user tidak diizinkan mengakses');
+      throw new NotFoundError('komentar tidak ditemukan');
     }
   }
 
@@ -62,8 +60,18 @@ class CommentRepositoryPostgres extends CommentRepository {
     return comments;
   }
 
-  async deleteComment(commentId) {
-    const query = {
+  async deleteComment({ userId, threadId, commentId }) {
+    let query = {
+      text: 'SELECT owner FROM comments WHERE id = $1 AND thread = $2',
+      values: [commentId, threadId],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rowCount) {
+      throw new NotFoundError('komentar tidak ditemukan');
+    } if (result.rows[0].owner !== userId) {
+      throw new AuthorizationError('user tidak diizinkan mengakses');
+    }
+    query = {
       text: 'UPDATE comments SET is_delete = true WHERE id = $1',
       values: [commentId],
     };

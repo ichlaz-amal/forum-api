@@ -35,9 +35,6 @@ describe('DeleteCommentUseCase', () => {
     };
 
     const mockCommentRepository = new CommentRepository();
-
-    mockCommentRepository.checkComment = jest.fn()
-      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.deleteComment = jest.fn()
       .mockImplementation(() => Promise.resolve());
 
@@ -49,9 +46,7 @@ describe('DeleteCommentUseCase', () => {
     await deleteCommentUseCase.execute(useCasePayload);
 
     // Assert
-    expect(mockCommentRepository.checkComment)
-      .toHaveBeenCalledWith(useCasePayload);
     expect(mockCommentRepository.deleteComment)
-      .toHaveBeenCalledWith(useCasePayload.commentId);
+      .toHaveBeenCalledWith(useCasePayload);
   });
 });

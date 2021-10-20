@@ -16,6 +16,7 @@ describe('LoginUserUseCase', () => {
       accessToken: 'access_token',
       refreshToken: 'refresh_token',
     });
+
     const mockUserRepository = new UserRepository();
     const mockAuthenticationRepository = new AuthenticationRepository();
     const mockAuthenticationTokenManager = new AuthenticationTokenManager();

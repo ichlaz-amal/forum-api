@@ -5,8 +5,7 @@ class DeleteCommentUseCase {
 
   async execute(useCasePayload) {
     this._validatePayload(useCasePayload);
-    await this._commentRepository.checkComment(useCasePayload);
-    return this._commentRepository.deleteComment(useCasePayload.commentId);
+    return this._commentRepository.deleteComment(useCasePayload);
   }
 
   _validatePayload(payload) {

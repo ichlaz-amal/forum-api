@@ -1,27 +1,34 @@
 /* eslint-disable camelcase */
 
 exports.up = (pgm) => {
-  pgm.createTable('users', {
+  pgm.createTable('replies', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    username: {
+    owner: {
       type: 'VARCHAR(50)',
       notNull: true,
-      unique: true,
     },
-    password: {
+    comment: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    content: {
       type: 'TEXT',
       notNull: true,
     },
-    fullname: {
-      type: 'TEXT',
-      notNull: true,
+    is_delete: {
+      type: 'BOOLEAN',
+      default: false,
+    },
+    date: {
+      type: 'TIMESTAMP',
+      default: pgm.func('current_timestamp'),
     },
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('users');
+  pgm.dropTable('replies');
 };

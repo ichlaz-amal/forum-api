@@ -3,6 +3,7 @@ const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
+const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
 
@@ -16,6 +17,7 @@ describe('/threads enpoint', () => {
     await AuthenticationsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
+    await RepliesTableTestHelper.cleanTable();
   });
 
   describe('when POST /threads', () => {
@@ -190,9 +192,18 @@ describe('/threads enpoint', () => {
       const { data: { addedThread: { id: threadId } } } = JSON.parse(threadResponse.payload);
 
       // add comment
-      await server.inject({
+      const commentResponse = await server.inject({
         method: 'POST',
         url: `/threads/${threadId}/comments`,
+        payload: { content: 'A Comment' },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const { data: { addedComment: { id: commentId } } } = JSON.parse(commentResponse.payload);
+
+      // add comment
+      await server.inject({
+        method: 'POST',
+        url: `/threads/${threadId}/comments/${commentId}/replies`,
         payload: { content: 'A Comment' },
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -209,6 +220,7 @@ describe('/threads enpoint', () => {
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.thread).toBeDefined();
       expect(responseJson.data.thread.comments).toBeDefined();
+      expect(responseJson.data.thread.comments[0].replies).toBeDefined();
     });
 
     it('should response 404 when thread id not found', async () => {

@@ -15,7 +15,7 @@ describe('RefreshAuthenticationUseCase', () => {
 
   it('should throw error if use case payload not meet data type specification', async () => {
     // Arrange
-    const useCasePayload = { refreshToken: 1 };
+    const useCasePayload = { refreshToken: 123 };
     const refreshAuthenticationUseCase = new RefreshAuthenticationUseCase({});
 
     // Action & Assert

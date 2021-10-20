@@ -6,7 +6,7 @@ describe('a Comment entities', () => {
     const payload = {
       username: 'dicoding',
       date: '2021-08-08T07:00:00.000Z',
-      content: 'a Comment',
+      content: 'A Comment',
     };
 
     // Action and Assert
@@ -20,7 +20,7 @@ describe('a Comment entities', () => {
       id: 123,
       username: 'dicoding',
       date: '2021-08-08T07:00:00.000Z',
-      content: 'a Comment',
+      content: 'A Comment',
     };
 
     // Action and Assert
@@ -34,7 +34,7 @@ describe('a Comment entities', () => {
       id: 'comment-123',
       username: 'dicoding',
       date: '2021-08-08T07:00:00.000Z',
-      content: 'a Comment',
+      content: 'A Comment',
     };
 
     // Action
