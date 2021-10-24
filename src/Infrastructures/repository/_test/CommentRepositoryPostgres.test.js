@@ -6,6 +6,7 @@ const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddComment = require('../../../Domains/comments/entities/AddComment');
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const Comment = require('../../../Domains/comments/entities/Comment');
+const Comments = require('../../../Domains/comments/entities/Comments');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
 
 describe('CommentRepositoryPostgres', () => {
@@ -77,9 +78,19 @@ describe('CommentRepositoryPostgres', () => {
         thread: 'thread-123',
         content: 'a Comment',
         owner: user.id,
-        date: (new Date()).toISOString(),
+        date: new Date(),
       };
       await CommentsTableTestHelper.addComment(comment);
+
+      const expectedComment = new Comment({
+        id: 'comment-123',
+        username: user.username,
+        date: comment.date,
+        content: comment.content,
+        isdelete: false,
+      });
+      const expectedComments = new Comments([expectedComment]);
+
       const fakeIdGenerator = () => '123';
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
 
@@ -87,12 +98,7 @@ describe('CommentRepositoryPostgres', () => {
       const comments = await commentRepositoryPostgres.getComments(comment.thread);
 
       // Assert
-      expect(comments).toStrictEqual([new Comment({
-        id: 'comment-123',
-        username: user.username,
-        date: comment.date,
-        content: comment.content,
-      })]);
+      expect(comments).toStrictEqual(expectedComments);
     });
   });
 

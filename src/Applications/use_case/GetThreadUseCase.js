@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-
 class GetThreadUseCase {
   constructor({ threadRepository, commentRepository, replyRepository }) {
     this._threadRepository = threadRepository;
@@ -11,10 +9,9 @@ class GetThreadUseCase {
     const { threadId } = useCasePayload;
     const thread = await this._threadRepository.getThread(threadId);
     const comments = await this._commentRepository.getComments(threadId);
-    for (let i = 0; i < comments.length; i += 1) {
-      comments[i].replies = await this._replyRepository.getReplies(comments[i].id);
-    }
-    return { ...thread, comments };
+    const replies = await this._replyRepository.getReplies(comments.ids);
+    comments.addReplies(replies);
+    return { ...thread, comments: comments.data };
   }
 }
 

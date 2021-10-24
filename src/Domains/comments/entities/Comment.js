@@ -1,19 +1,19 @@
 class Comment {
   constructor(payload) {
     this._verifyPayload(payload);
-    const { id, username, date, content } = payload;
+    const { id, username, date, content, isdelete } = payload;
     this.id = id;
     this.username = username;
-    this.date = date;
-    this.content = content;
+    this.date = date.toISOString();
+    this.content = isdelete ? '**komentar telah dihapus**' : content;
   }
 
-  _verifyPayload({ id, username, date, content }) {
-    if (!id || !username || !date || !content) {
+  _verifyPayload({ id, username, date, content, isdelete }) {
+    if (!id || !username || !date || !content || isdelete === undefined) {
       throw new Error('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
-    if (typeof id !== 'string' || typeof username !== 'string'
-      || typeof date !== 'string' || typeof content !== 'string') {
+    if (typeof id !== 'string' || typeof username !== 'string' || !(date instanceof Date)
+      || typeof content !== 'string' || typeof isdelete !== 'boolean') {
       throw new Error('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }

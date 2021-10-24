@@ -2,6 +2,7 @@ const AuthorizationError = require('../../Commons/exceptions/AuthorizationError'
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AddedComment = require('../../Domains/comments/entities/AddedComment');
 const Comment = require('../../Domains/comments/entities/Comment');
+const Comments = require('../../Domains/comments/entities/Comments');
 const CommentRepository = require('../../Domains/comments/CommentRepository');
 
 class CommentRepositoryPostgres extends CommentRepository {
@@ -39,12 +40,9 @@ class CommentRepositoryPostgres extends CommentRepository {
         SELECT
           comments.id AS id,
           users.username AS username,
-          to_char(comments.date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS date,
-          CASE
-            WHEN comments.is_delete = true
-              THEN '**komentar telah dihapus**'
-            ELSE comments.content
-          END AS content
+          comments.date AS date,
+          comments.content AS content,
+          comments.is_delete AS isdelete
         FROM comments
           LEFT JOIN users ON comments.owner = users.id
         WHERE comments.thread = $1
@@ -57,7 +55,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     for (let i = 0; i < result.rows.length; i += 1) {
       comments.push(new Comment({ ...result.rows[i] }));
     }
-    return comments;
+    return new Comments(comments);
   }
 
   async deleteComment({ userId, threadId, commentId }) {

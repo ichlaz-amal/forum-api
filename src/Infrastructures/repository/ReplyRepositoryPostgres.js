@@ -22,24 +22,22 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     return new AddedReply({ ...result.rows[0] });
   }
 
-  async getReplies(commentId) {
+  async getReplies(commentIds) {
     const query = {
       text: `
         SELECT
           replies.id AS id,
           users.username AS username,
-          to_char(replies.date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS date,
-          CASE
-            WHEN replies.is_delete = true
-              THEN '**balasan telah dihapus**'
-            ELSE replies.content
-          END AS content
+          replies.comment AS comment,
+          replies.date AS date,
+          replies.content AS content,
+          replies.is_delete AS isdelete
         FROM replies
           LEFT JOIN users ON replies.owner = users.id
-        WHERE replies.comment = $1
+        WHERE replies.comment = ANY($1::text[])
         ORDER BY replies.date ASC
       `,
-      values: [commentId],
+      values: [commentIds],
     };
     const result = await this._pool.query(query);
     const replies = [];

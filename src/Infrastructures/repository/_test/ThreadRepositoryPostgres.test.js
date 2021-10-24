@@ -72,7 +72,7 @@ describe('ThreadRepositoryPostgres', () => {
         title: 'a Thread',
         body: 'a Body',
         owner: user.id,
-        date: (new Date()).toISOString(),
+        date: new Date(),
       };
       await ThreadsTableTestHelper.addThread(actualThread);
       const fakeIdGenerator = () => '123';

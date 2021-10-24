@@ -4,9 +4,11 @@ describe('a Reply entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     // Arrange
     const payload = {
+      comment: 'comment-123',
       content: 'A Reply',
-      date: '2021-08-08T07:00:00.000Z',
+      date: new Date(),
       username: 'dicoding',
+      isdelete: false,
     };
 
     // Action and Assert
@@ -18,9 +20,11 @@ describe('a Reply entities', () => {
     // Arrange
     const payload = {
       id: 123,
+      comment: 'comment-123',
       content: 'A Reply',
-      date: '2021-08-08T07:00:00.000Z',
+      date: new Date(),
       username: 'dicoding',
+      isdelete: false,
     };
 
     // Action and Assert
@@ -32,9 +36,11 @@ describe('a Reply entities', () => {
     // Arrange
     const payload = {
       id: 'reply-123',
+      comment: 'comment-123',
       content: 'A Reply',
-      date: '2021-08-08T07:00:00.000Z',
+      date: new Date(),
       username: 'dicoding',
+      isdelete: false,
     };
 
     // Action
@@ -43,7 +49,28 @@ describe('a Reply entities', () => {
     // Assert
     expect(reply.id).toEqual(payload.id);
     expect(reply.content).toEqual(payload.content);
-    expect(reply.date).toEqual(payload.date);
+    expect(reply.date).toEqual(payload.date.toISOString());
+    expect(reply.username).toEqual(payload.username);
+  });
+
+  it('should create reply object correctly when deleted', () => {
+    // Arrange
+    const payload = {
+      id: 'reply-123',
+      comment: 'comment-123',
+      content: 'A Reply',
+      date: new Date(),
+      username: 'dicoding',
+      isdelete: true,
+    };
+
+    // Action
+    const reply = new Reply(payload);
+
+    // Assert
+    expect(reply.id).toEqual(payload.id);
+    expect(reply.content).toEqual('**balasan telah dihapus**');
+    expect(reply.date).toEqual(payload.date.toISOString());
     expect(reply.username).toEqual(payload.username);
   });
 });

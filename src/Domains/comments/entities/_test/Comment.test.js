@@ -5,8 +5,9 @@ describe('a Comment entities', () => {
     // Arrange
     const payload = {
       username: 'dicoding',
-      date: '2021-08-08T07:00:00.000Z',
+      date: new Date(),
       content: 'A Comment',
+      isdelete: false,
     };
 
     // Action and Assert
@@ -19,8 +20,9 @@ describe('a Comment entities', () => {
     const payload = {
       id: 123,
       username: 'dicoding',
-      date: '2021-08-08T07:00:00.000Z',
+      date: new Date(),
       content: 'A Comment',
+      isdelete: false,
     };
 
     // Action and Assert
@@ -33,8 +35,9 @@ describe('a Comment entities', () => {
     const payload = {
       id: 'comment-123',
       username: 'dicoding',
-      date: '2021-08-08T07:00:00.000Z',
+      date: new Date(),
       content: 'A Comment',
+      isdelete: false,
     };
 
     // Action
@@ -43,7 +46,27 @@ describe('a Comment entities', () => {
     // Assert
     expect(comment.id).toEqual(payload.id);
     expect(comment.username).toEqual(payload.username);
-    expect(comment.date).toEqual(payload.date);
+    expect(comment.date).toEqual(payload.date.toISOString());
     expect(comment.content).toEqual(payload.content);
+  });
+
+  it('should create comment object correctly when deleted', () => {
+    // Arrange
+    const payload = {
+      id: 'comment-123',
+      username: 'dicoding',
+      date: new Date(),
+      content: 'A Comment',
+      isdelete: true,
+    };
+
+    // Action
+    const comment = new Comment(payload);
+
+    // Assert
+    expect(comment.id).toEqual(payload.id);
+    expect(comment.username).toEqual(payload.username);
+    expect(comment.date).toEqual(payload.date.toISOString());
+    expect(comment.content).toEqual('**komentar telah dihapus**');
   });
 });

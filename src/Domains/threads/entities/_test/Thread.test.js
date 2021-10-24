@@ -6,7 +6,7 @@ describe('a Thread entities', () => {
     const payload = {
       title: 'A Thread',
       body: 'A Body',
-      date: '2021-08-08T07:00:00.000Z',
+      date: new Date(),
       username: 'dicoding',
     };
 
@@ -21,7 +21,7 @@ describe('a Thread entities', () => {
       id: 123,
       title: 'A Thread',
       body: 'A Body',
-      date: '2021-08-08T07:00:00.000Z',
+      date: new Date(),
       username: 'dicoding',
     };
 
@@ -36,7 +36,7 @@ describe('a Thread entities', () => {
       id: 'thread-123',
       title: 'A Thread',
       body: 'A Body',
-      date: '2021-08-08T07:00:00.000Z',
+      date: new Date(),
       username: 'dicoding',
     };
 
@@ -47,7 +47,7 @@ describe('a Thread entities', () => {
     expect(thread.id).toEqual(payload.id);
     expect(thread.title).toEqual(payload.title);
     expect(thread.body).toEqual(payload.body);
-    expect(thread.date).toEqual(payload.date);
+    expect(thread.date).toEqual(payload.date.toISOString());
     expect(thread.username).toEqual(payload.username);
   });
 });

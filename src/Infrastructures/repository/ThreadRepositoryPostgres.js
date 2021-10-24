@@ -39,7 +39,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
           threads.id AS id,
           threads.title AS title,
           threads.body AS body,
-          to_char(threads.date, 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS date,
+          threads.date AS date,
           users.username AS username
         FROM threads
           LEFT JOIN users ON threads.owner = users.id

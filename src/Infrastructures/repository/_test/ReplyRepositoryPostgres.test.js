@@ -55,21 +55,23 @@ describe('ReplyRepositoryPostgres', () => {
         comment: 'comment-123',
         content: 'a Reply',
         owner: user.id,
-        date: (new Date()).toISOString(),
+        date: new Date(),
       };
       await RepliesTableTestHelper.addReply(reply);
       const fakeIdGenerator = () => '123';
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action
-      const replies = await replyRepositoryPostgres.getReplies(reply.comment);
+      const replies = await replyRepositoryPostgres.getReplies([reply.comment]);
 
       // Assert
       expect(replies).toStrictEqual([new Reply({
         id: 'reply-123',
+        comment: reply.comment,
         username: user.username,
         date: reply.date,
         content: reply.content,
+        isdelete: false,
       })]);
     });
   });
