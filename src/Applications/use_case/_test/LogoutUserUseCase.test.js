@@ -27,10 +27,8 @@ describe('LogoutUserUseCase', () => {
     const useCasePayload = { refreshToken: 'refreshToken' };
 
     const mockAuthenticationRepository = new AuthenticationRepository();
-    mockAuthenticationRepository.checkToken = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockAuthenticationRepository.deleteToken = jest.fn()
-      .mockImplementation(() => Promise.resolve());
+    mockAuthenticationRepository.checkToken = jest.fn(() => Promise.resolve());
+    mockAuthenticationRepository.deleteToken = jest.fn(() => Promise.resolve());
 
     const logoutUserUseCase = new LogoutUserUseCase({
       authenticationRepository: mockAuthenticationRepository,

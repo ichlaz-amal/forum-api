@@ -88,6 +88,7 @@ describe('CommentRepositoryPostgres', () => {
         date: comment.date,
         content: comment.content,
         isdelete: false,
+        likecount: 0,
       });
       const expectedComments = new Comments([expectedComment]);
 

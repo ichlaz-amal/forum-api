@@ -28,14 +28,10 @@ describe('AddReplyUseCase', () => {
     const mockReplyRepository = new ReplyRepository();
 
     /** mocking needed function */
-    mockUserRepository.checkUserId = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockThreadRepository.checkThread = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.checkComment = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockReplyRepository.addReply = jest.fn()
-      .mockImplementation(() => Promise.resolve(expectedAddedReply));
+    mockUserRepository.checkUserId = jest.fn(() => Promise.resolve());
+    mockThreadRepository.checkThread = jest.fn(() => Promise.resolve());
+    mockCommentRepository.checkComment = jest.fn(() => Promise.resolve());
+    mockReplyRepository.addReply = jest.fn(() => Promise.resolve(expectedAddedReply));
 
     /** creating use case instance */
     const getReplyUseCase = new AddReplyUseCase({

@@ -11,6 +11,7 @@ describe('a Comments entities', () => {
       date: new Date(),
       content: 'A Comment',
       isdelete: false,
+      likecount: 0,
     };
 
     // Action and Assert
@@ -28,6 +29,7 @@ describe('a Comments entities', () => {
       date: new Date(),
       content: 'A Comment',
       isdelete: false,
+      likecount: 0,
     });
 
     // Action
@@ -59,6 +61,7 @@ describe('addReplies of Comment Entities', () => {
       date: new Date(),
       content: 'A Comment',
       isdelete: false,
+      likecount: 0,
     });
     const comments = new Comments([comment]);
 
@@ -95,6 +98,7 @@ describe('addReplies of Comment Entities', () => {
       date: new Date(),
       content: 'A Comment',
       isdelete: false,
+      likecount: 0,
     });
     const comments = new Comments([comment]);
 

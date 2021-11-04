@@ -8,6 +8,7 @@ describe('a Comment entities', () => {
       date: new Date(),
       content: 'A Comment',
       isdelete: false,
+      likecount: 0,
     };
 
     // Action and Assert
@@ -23,6 +24,7 @@ describe('a Comment entities', () => {
       date: new Date(),
       content: 'A Comment',
       isdelete: false,
+      likecount: 0,
     };
 
     // Action and Assert
@@ -38,6 +40,7 @@ describe('a Comment entities', () => {
       date: new Date(),
       content: 'A Comment',
       isdelete: false,
+      likecount: 0,
     };
 
     // Action
@@ -58,6 +61,7 @@ describe('a Comment entities', () => {
       date: new Date(),
       content: 'A Comment',
       isdelete: true,
+      likecount: 0,
     };
 
     // Action
@@ -68,5 +72,6 @@ describe('a Comment entities', () => {
     expect(comment.username).toEqual(payload.username);
     expect(comment.date).toEqual(payload.date.toISOString());
     expect(comment.content).toEqual('**komentar telah dihapus**');
+    expect(comment.likeCount).toEqual(payload.likecount);
   });
 });

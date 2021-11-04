@@ -24,6 +24,7 @@ describe('GetThreadUseCase', () => {
       date: new Date(),
       content: 'A Comment',
       isdelete: false,
+      likecount: 0,
     });
     const expectedReply = new Reply({
       id: 'reply-123',
@@ -40,12 +41,15 @@ describe('GetThreadUseCase', () => {
     const mockReplyRepository = new ReplyRepository();
 
     /** mocking needed function */
-    mockThreadRepository.getThread = jest.fn()
-      .mockImplementation(() => Promise.resolve(expectedThread));
-    mockCommentRepository.getComments = jest.fn()
-      .mockImplementation(() => Promise.resolve(new Comments([expectedComment])));
-    mockReplyRepository.getReplies = jest.fn()
-      .mockImplementation(() => Promise.resolve([expectedReply]));
+    mockThreadRepository.getThread = jest.fn(
+      () => Promise.resolve(expectedThread),
+    );
+    mockCommentRepository.getComments = jest.fn(
+      () => Promise.resolve(new Comments([expectedComment])),
+    );
+    mockReplyRepository.getReplies = jest.fn(
+      () => Promise.resolve([expectedReply]),
+    );
 
     /** creating use case instance */
     const getThreadUseCase = new GetThreadUseCase({
@@ -75,6 +79,7 @@ describe('GetThreadUseCase', () => {
     expect(thread.comments[0].username).toStrictEqual(expectedComment.username);
     expect(thread.comments[0].date).toStrictEqual(expectedComment.date);
     expect(thread.comments[0].content).toStrictEqual(expectedComment.content);
+    expect(thread.comments[0].likeCount).toStrictEqual(expectedComment.likeCount);
 
     expect(thread.comments[0].replies[0].id).toStrictEqual(expectedReply.id);
     expect(thread.comments[0].replies[0].username).toStrictEqual(expectedReply.username);

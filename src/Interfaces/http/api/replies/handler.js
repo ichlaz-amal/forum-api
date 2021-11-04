@@ -29,11 +29,7 @@ class RepliesHandler {
       ...request.params,
       userId: request.auth.credentials.id,
     });
-    const response = h.response({
-      status: 'success',
-    });
-    response.code(200);
-    return response;
+    return { status: 'success' };
   }
 }
 

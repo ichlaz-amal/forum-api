@@ -37,8 +37,7 @@ describe('DeleteReplyUseCase', () => {
     };
 
     const mockReplyRepository = new ReplyRepository();
-    mockReplyRepository.deleteReply = jest.fn()
-      .mockImplementation(() => Promise.resolve());
+    mockReplyRepository.deleteReply = jest.fn(() => Promise.resolve());
 
     const deleteReplyUseCase = new DeleteReplyUseCase({
       replyRepository: mockReplyRepository,

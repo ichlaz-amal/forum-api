@@ -42,7 +42,14 @@ class CommentRepositoryPostgres extends CommentRepository {
           users.username AS username,
           comments.date AS date,
           comments.content AS content,
-          comments.is_delete AS isdelete
+          comments.is_delete AS isdelete,
+          CAST ((
+            SELECT
+              COUNT(*) FROM likes
+            WHERE
+              comment = comments.id
+              AND liked = true
+          ) AS INTEGER) AS likecount
         FROM comments
           LEFT JOIN users ON comments.owner = users.id
         WHERE comments.thread = $1
@@ -51,10 +58,7 @@ class CommentRepositoryPostgres extends CommentRepository {
       values: [threadId],
     };
     const result = await this._pool.query(query);
-    const comments = [];
-    for (let i = 0; i < result.rows.length; i += 1) {
-      comments.push(new Comment({ ...result.rows[i] }));
-    }
+    const comments = result.rows.map((comment) => new Comment(comment));
     return new Comments(comments);
   }
 

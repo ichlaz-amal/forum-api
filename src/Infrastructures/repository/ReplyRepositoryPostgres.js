@@ -40,10 +40,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
       values: [commentIds],
     };
     const result = await this._pool.query(query);
-    const replies = [];
-    for (let i = 0; i < result.rows.length; i += 1) {
-      replies.push(new Reply({ ...result.rows[i] }));
-    }
+    const replies = result.rows.map((reply) => new Reply(reply));
     return replies;
   }
 
